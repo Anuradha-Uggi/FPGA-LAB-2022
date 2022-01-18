@@ -6,7 +6,7 @@ Assignment:01
 */
 
 #include<stdio.h>
-main()
+int main()
 {
 
 //declare variables
