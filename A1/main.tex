@@ -2,21 +2,13 @@
 %
 \usepackage{setspace}
 \usepackage{gensymb}
-%\doublespacing
+
 \singlespacing
 
-%\usepackage{graphicx}
-%\usepackage{amssymb}
-%\usepackage{relsize}
 \usepackage[cmex10]{amsmath}
-%\usepackage{amsthm}
-%\interdisplaylinepenalty=2500
-%\savesymbol{iint}
-%\usepackage{txfonts}
-%\restoresymbol{TXF}{iint}
-%\usepackage{wasysym}
+
 \usepackage{amsthm}
-%\usepackage{iithtlc}
+\usepackage[latin1]{inputenc}
 \usepackage{mathrsfs}
 \usepackage{txfonts}
 \usepackage{stfloats}
@@ -24,21 +16,22 @@
 \usepackage{cite}
 \usepackage{cases}
 \usepackage{subfig}
-%\usepackage{xtab}
+\usepackage{karnaugh-map}
 \usepackage{longtable}
 \usepackage{multirow}
-%\usepackage{algorithm}
-%\usepackage{algpseudocode}
+
 \usepackage{enumitem}
 \usepackage{mathtools}
+\usepackage{steinmetz}
 \usepackage{tikz}
 \usepackage{circuitikz}
 \usepackage{verbatim}
-%\usepackage{tfrupee}
+\usepackage{tfrupee}
 \usepackage[breaklinks=true]{hyperref}
-%\usepackage{stmaryrd}
-\usepackage{tkz-euclide} % loads  TikZ and tkz-base
-%\usetkzobj{all}
+
+\usepackage{tkz-euclide}
+
+\usetikzlibrary{arrows, shapes.gates.logic.US, calc}
 \usepackage{listings}
     \usepackage{color}                                            %%
     \usepackage{array}                                            %%
@@ -47,6 +40,11 @@
     \usepackage{multirow}                                         %%
     \usepackage{hhline}                                           %%
     \usepackage{ifthen}                                           %%
+    \usepackage{lscape}     
+\usepackage{multicol}
+\usepackage{chngcntr}
+%\usepackage{tfrupee}
+                                       %%
   %optionally (for landscape tables embedded in another document): %%
     \usepackage{lscape}     
 \usepackage{multicol}
@@ -149,7 +147,9 @@ columns=fullflexible
      \def\midbox#1{\raisebox{-0.5\baselineskip}[0in][0in]{#1}}
 \vspace{3cm}
 \title{
-EE5811 : FPGA Lab\\ Assignment-01
+%	\logo{
+EE5811 : FPGA LAB \\ ASSIGNMENT 1
+%	}
 }
 \author{ Anuradha Uggi (EE21RESCH01008)}	
 % make the title area
@@ -164,17 +164,16 @@ Download the codes from
 \begin{lstlisting}
 https://github.com/Anuradha-Uggi/FPGA-LAB-2022/blob/main/A1/A1.c
 \end{lstlisting}
-\section{PROBLEM STATEMENT}
+\section{\textbf{PROBLEM STATEMENT}}
 Reduce the following Boolean Expression to its simplest form using K-Map.
 \begin{align}
-    F(X,Y,Z,W)=\sum(0,1,2,3,5,6,7,10,14,15)
+    F(P,Q,R,S)=\sum(0,1,2,3,5,6,7,10,14,15)
 \end{align}
-\section{SOLUTION}
-From the K-Map shown in Figure \ref{fig:kmap} the above expression can be simplified as,
-\begin{figure}[!ht]
+\section{\textbf{SOLUTION}}
+Using K-Map \ref{fig:kmap}, simplified SOP expression is:
+\numberwithin{figure}{section}
+\begin{figure}[h]
 \centering
-\resizebox{\columnwidth}{!}
-{
 \begin{karnaugh-map}[4][4][1][$$RS$$][$$PQ$$]
     \minterms{0,1,2,3,5,6,7,10,14,15}
     \maxterms{4,8,9,11,12,13}
@@ -182,14 +181,67 @@ From the K-Map shown in Figure \ref{fig:kmap} the above expression can be simpli
     \implicant{2}{10}
     \implicant{1}{7}
     \implicant{7}{14}
-    \draw[color=black, ultra thin] (0,2) --
-    \end{karnaugh-map}
-}
-\caption{K-Map}
+    
+    \draw[color=black, ultra thin] (0, 4) --
+    node [pos=0.7, above right, anchor=south west] {$RS$} % YOU CAN CHANGE NAME OF VAR HERE, THE $X$ IS USED FOR ITALICS
+    node [pos=0.7, below left, anchor=north east] {$PQ$} % SAME FOR THIS
+    ++(135:1);
+    
+\end{karnaugh-map}
+\caption{Karnaugh-Map}
 \label{fig:kmap}
 \end{figure}
 \begin{align}
     F(P,Q,R,S) &= \sum(0,1,2,3,5,6,7,10,14,15) \\
     &= \Bar{P}\Bar{Q} + R\Bar{S} + \Bar{P}S+QR
 \end{align}
+\subsection{Using Nand Logic:}
+\begin{align}
+F &=\Bar{P}\Bar{Q} + R\Bar{S} + \Bar{P}S+QR\\
+  &=((\bar{P}\bar{Q})'(P\bar{S})'(\bar{P}S)'(QR)')'
+\end{align}
+
+Now we can draw the logic circuit using NAND gates as below.\\\\
+\begin{figure}[hbt!]
+    \centering
+\begin{circuitikz}[label distance=2mm, scale=2,
+  connection/.style={draw,circle,fill=black,inner sep=1.5pt}
+  ]
+\node (x) at (0.5,0) {$P$};
+\node (y) at (1,0) {$Q$};
+\node (z) at (1.5,0) {$R$};
+\node (w) at (2.0,0) {$S$};
+\node[nand gate US, draw, rotate=0, logic gate inputs=inni, scale=1.5] at ($(z)+(1.5,-1)$) (t1) {};
+\node[nand gate US, draw, rotate=0, logic gate inputs=nnni, scale=1.5] at ($(z)+(1.5,-2)$) (t2) {};
+\node[nand gate US, draw, rotate=0, logic gate inputs=innn, scale=1.5] at ($(z)+(1.5,-3)$) (t3) {};
+\node[nand gate US, draw, rotate=0, logic gate inputs=nnnn, scale=1.5] at ($(z)+(1.5,-4)$) (t4) {};
+\node[nand gate US, draw, rotate=0, logic gate inputs=nnnn, scale=1.5] at ($(t2)+(1.5,-0.5)$) (t5) {};
+
+\draw (x) -- ($(x) + (0,-5.5)$);
+\draw (y) -- ($(y) + (0,-5.5)$);
+\draw (z) -- ($(z) + (0,-5.5)$);
+\draw (w) -- ($(w) + (0,-5.5)$);
+
+\draw (x) |- (t1.input 1) node[connection,pos=0.5]{};
+\draw (y) |- (t1.input 4) node[connection,pos=0.5]{};
+
+\draw (x) |- (t2.input 1) node[connection,pos=0.5]{};
+\draw (w) |- (t2.input 4) node[connection,pos=0.5]{};
+
+\draw (x) |- (t3.input 1) node[connection,pos=0.5]{};
+\draw (w) |- (t3.input 4) node[connection,pos=0.5]{};
+
+\draw (y) |- (t4.input 1) node[connection,pos=0.5]{};
+\draw (z) |- (t4.input 4) node[connection,pos=0.5]{};
+
+\draw (t1.output) -- ([xshift=0.3cm]t1.output) |- (t5.input 1);
+\draw (t2.output) -- ([xshift=0.2cm]t2.output) |- (t5.input 2);
+\draw (t3.output) -- ([xshift=0.2cm]t3.output) |- (t5.input 3);
+\draw (t4.output) -- ([xshift=0.3cm]t4.output) |- (t5.input 4);
+\draw (t5.output) -- ([xshift=0.3cm]t5.output) node[above]{$F$};
+
+\end{circuitikz}
+\caption{Logic Circuit using NAND gates}
+\label{ckt1}
+\end{figure}
 \end{document}

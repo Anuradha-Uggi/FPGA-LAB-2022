@@ -10,33 +10,38 @@ main()
 {
 
 //declare variables
-  int p,q,r,s;
+  unsigned int p,q,r,s;
   printf("Code starts here...\n");
+  printf("enter minterms and maxterms:\n");
+  // minterms
+  unsigned int M[16]={1,1,1,1,0,1,1,1,0,0,1,0,0,0,1,1};
+
+  
   printf("enter possible boolean combinations pqrs:\n");
 //user inputs for above variables
   scanf("%d%d%d%d",&p,&q,&r,&s);
 //NAND logic function declaration
 // 1-input NAND logic
-  int NAND1(int p)
+  unsigned int NAND1( int p)
   {
      int y=!p;
      return y;
   }
 //2-inputs NAND logic
-  int NAND2(int p,int q)
+  unsigned int NAND2( int p,int q)
   {
-      int y=!(p&q);
+      unsigned int y=!(p&q);
       return y;
   }
 //4-input NAND logic
-  int NAND4(int p,int q,int r,int s)
+  unsigned int NAND4( int p,int q,int r, int s)
   {
       int y=!(p&q&r&s);
       return y;
   }
   
  //reduced k-map logic
- int F(int p,int q,int r,int s)
+ unsigned int F(int p,int q,int r,int s)
  {
       int a,b,c,d;
       a=NAND2(NAND1(p),NAND1(q));
@@ -67,11 +72,12 @@ main()
  //truth table for the reduced logic
  printf("\nTRUTH TABLE:\n");
  printf("\n");
+ printf("\t input \t theor.output \t sim.output\n");
  for(int i=0;i<16;i++)
  {
    convert(input[i], binary);
    int m=binary[0]-48,n=binary[1]-48,o=binary[2]-48,p=binary[3]-48;
-   printf("\t input:%s \t output:%d", binary,F(m,n,o,p));
+   printf("\t %s \t\t %d \t\t %d", binary,M[i],F(m,n,o,p));
    printf("\n");
    
  }
