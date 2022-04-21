@@ -1,0 +1,6 @@
+p             12   3  0  # set_io p  3
+r             16   3  0  # set_io r  62
+s             18   3  0  # set_io s 63
+$iopadmap$Assignment5.redled  22  32  0  # set_io redled    34
+$iopadmap$Assignment5.greenled  24  32  0  # set_io greenled    39
+$iopadmap$Assignment5.blueled  30  32  0  # set_io blueled    38
